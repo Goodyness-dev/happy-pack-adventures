@@ -1,5 +1,25 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /client
+Disallow: /proposal
 
-# Sitemaps
-Sitemap: https://tobysllc.com/sitemap.xml
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://happypackadventures.vercel.app/sitemap.xml

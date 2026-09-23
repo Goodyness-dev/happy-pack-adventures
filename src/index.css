@@ -6,43 +6,138 @@
   :root {
     color-scheme: light;
   }
-  
-  html.dark {
-    color-scheme: dark;
-    background-color: #000000 !important;
-  }
 
   body {
-    @apply bg-white text-gray-900 antialiased overflow-x-hidden transition-colors duration-200;
+    background-color: #FAFAF6;
+    color: #26322D;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
-  html.dark body {
-    background-color: #000000 !important;
-    color: #ffffff !important;
+  h1, h2, h3, .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.01em;
   }
 
-  /* Clean scrollbar */
+  /* Tactile custom scrollbar */
   ::-webkit-scrollbar {
-    width: 7px;
+    width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #f5f5f5;
-  }
-  html.dark ::-webkit-scrollbar-track {
-    background: #000000;
+    background: #FAFAF6;
   }
   ::-webkit-scrollbar-thumb {
-    background: #c4c4c4;
-    border-radius: 4px;
-  }
-  html.dark ::-webkit-scrollbar-thumb {
-    background: #262626;
+    background: #D8DED5;
+    border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #999;
+    background: #7C897F;
   }
-  html.dark ::-webkit-scrollbar-thumb:hover {
-    background: #404040;
+}
+
+@layer components {
+  /* Editorial card styles conforming to the Wedding Album aesthetic */
+  .card-thick {
+    background-color: #FEFEFB;
+    border: 1px solid #D8DED5;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 20px -2px rgba(38, 50, 45, 0.05);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card-thick-hover {
+    background-color: #FEFEFB;
+    border: 1px solid #D8DED5;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 20px -2px rgba(38, 50, 45, 0.05);
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card-thick-hover:hover {
+    border-color: #7C897F;
+    box-shadow: 0 16px 36px -6px rgba(38, 50, 45, 0.09), 0 4px 12px -2px rgba(52, 87, 68, 0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Stationery Pill Buttons */
+  .btn-accent {
+    background-color: #345744;
+    color: #ffffff;
+    border-radius: 9999px;
+    padding: 0.875rem 2rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px -1px rgba(52, 87, 68, 0.25);
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-accent:hover {
+    background-color: #294737;
+    box-shadow: 0 6px 20px -1px rgba(52, 87, 68, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn-accent:active {
+    transform: scale(0.985);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: #26322D;
+    border: 1px solid #D8DED5;
+    border-radius: 9999px;
+    padding: 0.875rem 1.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-secondary:hover {
+    background-color: #F0F2EC;
+    border-color: #7C897F;
+  }
+
+  .btn-secondary:active {
+    transform: scale(0.985);
+  }
+
+  /* Elegant Input Fields */
+  .input-wedding {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #D8DED5;
+    background-color: #ffffff;
+    color: #26322D;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-wedding:focus {
+    outline: none;
+    border-color: #345744;
+    box-shadow: 0 0 0 3px rgba(52, 87, 68, 0.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

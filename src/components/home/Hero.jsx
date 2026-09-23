@@ -1,110 +1,113 @@
 import React from 'react';
-import { ChevronRight, Phone, Wrench, Shield } from 'lucide-react';
 import { BUSINESS_INFO } from '../../data/businessData';
+import { imageManifest } from '../../data/imageManifest';
+import ImageFrame from '../common/ImageFrame';
 
-export default function Hero({ onOpenWizard }) {
+export default function Hero({ onOpenInquiry }) {
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <section className="relative overflow-hidden" aria-label="Introduction & Quick Quote">
-      {/* Full-width Hero with Preloaded Video Background */}
-      <div className="relative min-h-[540px] sm:min-h-[620px] lg:min-h-[680px] flex items-center">
-        {/* Video Background with auto preload and bulletproof image fallback */}
-        <div className="absolute inset-0 overflow-hidden bg-neutral-950 bg-[url('/images/hero-truck.jpg')] bg-cover bg-center">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover"
-            poster="/images/hero-truck.jpg"
-            aria-hidden="true"
-          >
-            <source src="/images/hero-video.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay gradient optimized for crisp text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/35" />
-        </div>
+    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28 overflow-hidden bg-[#FAFAF6]">
+      {/* Subtle architectural background divider */}
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[#F0F2EC]/60 to-transparent pointer-events-none" />
 
-        {/* Hero Content (Bigger typography) */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-32 w-full">
-          <div className="max-w-3xl space-y-5 sm:space-y-6">
-            {/* Small badge */}
-            <div className="inline-flex items-center space-x-2.5 px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs sm:text-sm font-semibold border border-white/20">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
-              <span>Casa Grande's Trusted Shop Since 2009</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          
+          {/* Left Column: Editorial Wedding Stationery Copy (5 Cols) */}
+          <div className="lg:col-span-5 flex flex-col justify-center text-left">
+            {/* Category Tag */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF0EB] text-[#345744] text-xs font-semibold tracking-wider uppercase mb-5 w-fit border border-[#D8DED5]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#345744]"></span>
+              <span>Wedding Dog Chaperone � {BUSINESS_INFO.city}, AL</span>
             </div>
 
-            {/* Headline (Bigger: 4xl to 7xl) */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black font-heading text-white tracking-tight leading-[1.1]">
-              Dependable Auto & Diesel Care
+            {/* Main Editorial Headline */}
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.08] text-[#26322D] font-normal tracking-tight mb-5">
+              Your day. <br />
+              <span className="italic font-normal text-[#345744]">Their place</span> beside you.
             </h1>
 
-            {/* Subtitle (Bigger: text-lg to 2xl) */}
-            <p className="text-lg sm:text-2xl text-white/90 max-w-2xl leading-relaxed font-medium">
-              Family-owned repair shop specializing in engine swaps, diesel diagnostics, and honest automotive work in Casa Grande, AZ.
+            {/* Supporting Copy */}
+            <p className="text-base sm:text-lg text-[#59645E] leading-relaxed mb-7 max-w-xl font-sans">
+              Thoughtful wedding-day dog care, ceremony coordination, and climate-controlled transport�so your family stays present while we look after your best friend.
             </p>
 
-            {/* CTAs (Bigger padding and font) */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-8">
               <button
-                onClick={() => onOpenWizard()}
-                className="px-8 py-4 rounded-xl bg-red-700 hover:bg-red-800 text-white font-black text-lg transition-all flex items-center justify-center space-x-2.5 shadow-lg active:scale-95"
-                aria-label="Get a Free Quote Online"
+                onClick={() => onOpenInquiry()}
+                className="btn-accent group text-base"
               >
-                <span>Get a Free Quote</span>
-                <ChevronRight className="w-5 h-5" />
+                <span>Check Your Wedding Date</span>
+                <svg className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
 
-              <a
-                href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`}
-                className="px-7 py-4 rounded-xl bg-white/15 backdrop-blur-sm hover:bg-white/25 text-white font-bold text-lg border border-white/25 transition flex items-center justify-center space-x-2.5 active:scale-95"
-                aria-label={`Call Toby's Auto Mechanic at ${BUSINESS_INFO.phone}`}
+              <button
+                onClick={() => scrollToSection('weddings')}
+                className="btn-secondary text-base"
               >
-                <Phone className="w-5 h-5" />
-                <span>{BUSINESS_INFO.phone}</span>
-              </a>
+                <span>See Real Weddings</span>
+              </button>
             </div>
 
-            {/* Trust proof (Bigger text) */}
-            <div className="flex items-center space-x-3 text-sm sm:text-base text-white/90 pt-2 font-medium">
-              <div className="flex text-amber-400 text-lg" aria-label="5 out of 5 stars rating">
-                {'★★★★★'.split('').map((_, i) => (
-                  <span key={i} className="leading-none">★</span>
+            {/* Reassurance & Verification Anchor */}
+            <div className="pt-5 border-t border-[#D8DED5] flex items-center gap-4 text-xs text-[#59645E]">
+              <div className="flex -space-x-1.5">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="w-6 h-6 rounded-full bg-[#345744]/15 border-2 border-white flex items-center justify-center text-[10px] text-[#345744] font-bold">
+                    ?
+                  </div>
                 ))}
               </div>
-              <span>5.0 Rating on Yelp & Google (48+ Verified Reviews)</span>
+              <div>
+                <span className="font-semibold text-[#26322D]">100% Focused on Pet Safety</span>
+                <p className="text-[11px] text-[#59645E]">Licensed � Pet First Aid & CPR � Fully Insured</p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Floating Quick Action Bar (Midnight Pure Black) */}
-      <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-10 pb-8 sm:pb-10">
-        <div className="bg-white dark:bg-black rounded-2xl shadow-xl border border-gray-100 dark:border-neutral-800 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-3.5 transition-colors">
-          <div 
-            className="flex items-center space-x-3 flex-1 w-full cursor-pointer"
-            onClick={() => onOpenWizard()}
-          >
-            <div className="flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-[#0c0c0c] rounded-xl border border-gray-200 dark:border-neutral-800 flex-1 hover:border-red-400 dark:hover:border-red-600 transition">
-              <Wrench className="w-5 h-5 text-red-700 dark:text-red-600 shrink-0" />
-              <span className="text-sm sm:text-base text-gray-700 dark:text-neutral-200 font-medium truncate">
-                Engine, Brakes, Diesel, Custom issue...
-              </span>
-            </div>
-            <div className="hidden sm:flex items-center space-x-3 px-4 py-3 bg-gray-50 dark:bg-[#0c0c0c] rounded-xl border border-gray-200 dark:border-neutral-800 flex-1">
-              <Shield className="w-5 h-5 text-gray-400 dark:text-neutral-500 shrink-0" />
-              <span className="text-sm sm:text-base text-gray-600 dark:text-neutral-400 font-medium">
-                Casa Grande, AZ 85122
-              </span>
+          {/* Right Column: Prominent Wedding Album Photograph (7 Cols) */}
+          <div className="lg:col-span-7">
+            <div className="relative">
+              {/* Decorative paper offset border */}
+              <div className="absolute -inset-3 rounded-3xl bg-[#F0F2EC] -rotate-1 hidden sm:block border border-[#D8DED5]/80 pointer-events-none" />
+
+              <div className="relative">
+                <ImageFrame
+                  src={imageManifest.heroDesktop.src}
+                  alt={imageManifest.heroDesktop.alt}
+                  aspectRatio="aspect-[4/3] sm:aspect-[16/11]"
+                  rounded="rounded-2xl sm:rounded-3xl"
+                  title={imageManifest.heroDesktop.placeholderTitle}
+                  subtitle={imageManifest.heroDesktop.placeholderSubtitle}
+                  badge="Featured Alabama Wedding"
+                  className="shadow-wedding-raised"
+                />
+
+                {/* Floating Tactile Quote Card */}
+                <div className="hidden sm:flex absolute -bottom-6 -left-6 max-w-xs bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-[#D8DED5] shadow-wedding-card items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#345744]/10 text-[#345744] flex-shrink-0 flex items-center justify-center font-serif text-lg font-bold">
+                    �
+                  </div>
+                  <div>
+                    <p className="text-xs italic text-[#26322D] leading-snug">
+                      �Cooper walked the aisle perfectly and was safely tucked in bed before reception dinner.�
+                    </p>
+                    <p className="text-[11px] font-semibold text-[#345744] mt-1.5">
+                      � Savannah & Tyler M. (Birmingham)
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <button
-            onClick={() => onOpenWizard()}
-            className="w-full sm:w-auto px-7 py-3 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-base transition-colors shrink-0 shadow-md active:scale-95"
-            aria-label="Start quote request from quick action bar"
-          >
-            Get Quote
-          </button>
+
         </div>
       </div>
     </section>

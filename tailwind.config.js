@@ -8,29 +8,32 @@ export default {
   theme: {
     extend: {
       colors: {
-        midnight: {
-          DEFAULT: '#000000',
-          pure: '#000000',
-          card: '#0a0a0a',
-          cardHover: '#111111',
-          border: '#1e1e1e',
-          subtle: '#2a2a2a',
+        surface: {
+          DEFAULT: '#FAFAF6',
+          soft: '#F0F2EC',
+          raised: '#FEFEFB',
         },
-        shop: {
-          red: '#c62828',
-          redHover: '#a51c1c',
-          dark: '#000000',
-          charcoal: '#0a0a0a',
-          body: '#4a4a4a',
-          muted: '#717171',
-          light: '#f8f8f6',
-          border: '#e5e5e5',
-        }
+        wedding: {
+          text: '#26322D',
+          muted: '#59645E',
+          line: '#D8DED5',
+          border: '#7C897F',
+        },
+        accent: {
+          DEFAULT: '#345744',
+          hover: '#294737',
+          light: '#EAF0EB',
+          subtle: 'rgba(52, 87, 68, 0.08)',
+        },
       },
       fontFamily: {
-        heading: ['"Montserrat"', '"Inter"', 'system-ui', 'sans-serif'],
-        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-      }
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"Manrope"', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      boxShadow: {
+        'wedding-card': '0 4px 20px -2px rgba(38, 50, 45, 0.05), 0 2px 6px -1px rgba(38, 50, 45, 0.03)',
+        'wedding-raised': '0 12px 32px -4px rgba(38, 50, 45, 0.08), 0 4px 12px -2px rgba(38, 50, 45, 0.04)',
+      },
     },
   },
   plugins: [],

@@ -1,133 +1,107 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
-import ServicesSection from './components/home/ServicesSection';
-import AboutSection from './components/home/AboutSection';
-import AmenitiesSection from './components/home/AmenitiesSection';
-import LocationHoursSection from './components/home/LocationHoursSection';
-import ReviewsSection from './components/home/ReviewsSection';
+import ProofSection from './components/home/ProofSection';
+import WhatWeTakeCareOf from './components/home/WhatWeTakeCareOf';
+import MomentsExplorer from './components/home/MomentsExplorer';
+import CoverageSection from './components/home/CoverageSection';
+import RealWeddingsSection from './components/home/RealWeddingsSection';
+import MeetHandlerSection from './components/home/MeetHandlerSection';
+import BookingStepsSection from './components/home/BookingStepsSection';
+import FaqSection from './components/home/FaqSection';
+import ClosingCtaSection from './components/home/ClosingCtaSection';
 import Footer from './components/layout/Footer';
-import AllServicesPage from './components/services/AllServicesPage';
-import QuoteWizardModal from './components/wizard/QuoteWizardModal';
+import InquiryModal from './components/inquiry/InquiryModal';
+import ProposalView from './components/proposal/ProposalView';
+import ClientPortalView from './components/client/ClientPortalView';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './components/admin/AdminLogin';
-import { Phone, Calendar } from 'lucide-react';
-import { BUSINESS_INFO } from './data/businessData';
 import { authApi, getStoredToken } from './services/api';
+import { BUSINESS_INFO } from './data/businessData';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'services' | 'admin'
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [wizardCategory, setWizardCategory] = useState(null);
-  const [wizardService, setWizardService] = useState(null);
+  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'proposal' | 'portal' | 'admin'
+  const [inquiryOpen, setInquiryOpen] = useState(false);
+  const [inquiryScope, setInquiryScope] = useState(null);
+  const [selectedMoments, setSelectedMoments] = useState(['portraits', 'ceremony']);
 
-  // Admin Authentication State
+  // Admin Auth State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminUser, setAdminUser] = useState(null);
 
-  // Midnight Dark Mode state
-  const [darkMode, setDarkMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem('tobys_theme');
-      if (saved) return saved === 'dark';
-      return false; // Default to clean light mode unless toggled
-    } catch {
-      return false;
-    }
-  });
-
-  // Check stored auth token on mount
   useEffect(() => {
     const token = getStoredToken();
     if (token) {
       authApi.verify()
-        .then(res => {
+        .then((res) => {
           if (res.authenticated) {
             setIsAdminAuthenticated(true);
             setAdminUser(res.user);
           }
         })
-        .catch(() => {
-          setIsAdminAuthenticated(false);
-        });
+        .catch(() => setIsAdminAuthenticated(false));
     }
   }, []);
 
-  // Apply dark class to <html> and <body> immediately
+  // Browser hash routing synchronization
   useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode || currentPage === 'admin') {
-      root.classList.add('dark');
-      document.body.classList.add('dark');
-      if (currentPage !== 'admin') {
-        localStorage.setItem('tobys_theme', 'dark');
-      }
-    } else {
-      root.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('tobys_theme', 'light');
-    }
-  }, [darkMode, currentPage]);
-
-  const toggleDarkMode = () => {
-    setDarkMode(prev => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.remove('dark');
-      }
-      return next;
-    });
-  };
-
-  // Sync with browser URL hash for routing
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash === '#/admin' || hash === '#admin') {
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes('admin')) {
         setCurrentPage('admin');
-      } else if (hash === '#/services' || hash === '#services-all') {
-        setCurrentPage('services');
+      } else if (hash.includes('proposal')) {
+        setCurrentPage('proposal');
+      } else if (hash.includes('portal') || hash.includes('client')) {
+        setCurrentPage('portal');
       } else {
         setCurrentPage('home');
       }
     };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
-    if (page === 'services') {
-      window.location.hash = '#/services';
-    } else if (page === 'admin') {
-      window.location.hash = '#/admin';
-    } else {
-      if (window.location.hash.startsWith('#/services') || window.location.hash.startsWith('#/admin')) {
+    if (page === 'admin') window.location.hash = '#/admin';
+    else if (page === 'proposal') window.location.hash = '#/proposal';
+    else if (page === 'portal') window.location.hash = '#/portal';
+    else {
+      if (window.location.hash) {
         window.history.pushState(null, '', window.location.pathname);
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenWizard = (category = null, service = null) => {
-    setWizardCategory(category);
-    setWizardService(service);
-    setWizardOpen(true);
+  const handleOpenInquiry = (scope = null) => {
+    setInquiryScope(scope);
+    setInquiryOpen(true);
   };
 
-  const handleCloseWizard = () => {
-    setWizardOpen(false);
-    setWizardCategory(null);
-    setWizardService(null);
+  const handleCloseInquiry = () => {
+    setInquiryOpen(false);
   };
 
-  // If on Admin route, render full-screen Admin portal
+  const handleToggleMoment = (momentId) => {
+    setSelectedMoments((prev) =>
+      prev.includes(momentId) ? prev.filter((id) => id !== momentId) : [...prev, momentId]
+    );
+  };
+
+  // Subpage: Interactive Proposal Review
+  if (currentPage === 'proposal') {
+    return <ProposalView onBackToSite={() => handleNavigate('home')} />;
+  }
+
+  // Subpage: Couple Booking Portal
+  if (currentPage === 'portal') {
+    return <ClientPortalView onBackToSite={() => handleNavigate('home')} />;
+  }
+
+  // Subpage: Owner Admin Dashboard
   if (currentPage === 'admin') {
     return isAdminAuthenticated ? (
       <AdminLayout
@@ -150,67 +124,60 @@ export default function App() {
   }
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-black text-white' : 'bg-white text-gray-900'} flex flex-col font-sans transition-colors duration-200`}>
-      {/* Global Navbar with Dark Mode Toggle */}
-      <Navbar 
-        onOpenWizard={() => handleOpenWizard()} 
+    <div className="min-h-screen bg-[#FAFAF6] text-[#26322D] flex flex-col font-sans selection:bg-[#345744]/15 selection:text-[#1e3428]">
+      {/* Stationery Wedding Navbar */}
+      <Navbar
+        onOpenInquiry={handleOpenInquiry}
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        darkMode={darkMode}
-        onToggleDarkMode={toggleDarkMode}
       />
 
-      {/* Main View: Landing Page OR All Services Page */}
+      {/* Main Wedding Album Editorial Flow */}
       <main className="flex-grow">
-        {currentPage === 'services' ? (
-          <AllServicesPage 
-            onOpenWizard={handleOpenWizard}
-            onBackToHome={() => handleNavigate('home')}
-          />
-        ) : (
-          <>
-            <Hero onOpenWizard={handleOpenWizard} />
-            <ServicesSection 
-              onOpenWizard={handleOpenWizard}
-              onViewAllServices={() => handleNavigate('services')}
-            />
-            <AboutSection onOpenWizard={() => handleOpenWizard()} />
-            <AmenitiesSection onOpenWizard={() => handleOpenWizard()} />
-            <ReviewsSection onOpenWizard={() => handleOpenWizard()} />
-            <LocationHoursSection onOpenWizard={() => handleOpenWizard()} />
-          </>
-        )}
+        <Hero onOpenInquiry={handleOpenInquiry} />
+        <ProofSection />
+        <WhatWeTakeCareOf onOpenInquiry={handleOpenInquiry} />
+        <MomentsExplorer
+          selectedMoments={selectedMoments}
+          onToggleMoment={handleToggleMoment}
+          onOpenInquiry={handleOpenInquiry}
+        />
+        <CoverageSection onOpenInquiry={handleOpenInquiry} />
+        <RealWeddingsSection onOpenInquiry={handleOpenInquiry} />
+        <MeetHandlerSection onOpenInquiry={handleOpenInquiry} />
+        <BookingStepsSection onOpenInquiry={handleOpenInquiry} />
+        <FaqSection onOpenInquiry={handleOpenInquiry} />
+        <ClosingCtaSection onOpenInquiry={handleOpenInquiry} />
       </main>
 
-      {/* Global Footer */}
-      <Footer 
-        onOpenWizard={() => handleOpenWizard()} 
+      {/* Footer */}
+      <Footer
+        onOpenInquiry={handleOpenInquiry}
         onNavigate={handleNavigate}
       />
 
-      {/* Quote Request Wizard Modal */}
-      <QuoteWizardModal
-        isOpen={wizardOpen}
-        onClose={handleCloseWizard}
-        initialCategory={wizardCategory}
-        initialService={wizardService}
+      {/* 3-Step Qualification & Inquiry Modal */}
+      <InquiryModal
+        isOpen={inquiryOpen}
+        onClose={handleCloseInquiry}
+        initialScope={inquiryScope}
+        selectedMoments={selectedMoments}
+        onToggleMoment={handleToggleMoment}
       />
 
-      {/* Sticky Mobile Bottom Bar (Midnight Black supported) */}
-      <div className={`fixed bottom-0 left-0 right-0 z-30 sm:hidden ${darkMode ? 'bg-black/95 border-neutral-800' : 'bg-white/95 border-gray-200'} backdrop-blur-md border-t p-2.5 flex items-center gap-2.5 shadow-lg`}>
+      {/* Mobile Sticky Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 sm:hidden bg-[#FAFAF6]/95 backdrop-blur-md border-t border-[#D8DED5] p-2.5 flex items-center gap-2 shadow-lg">
         <a
-          href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`}
-          className={`flex-1 py-3 px-3.5 rounded-xl ${darkMode ? 'bg-[#111111] text-white border-neutral-800' : 'bg-gray-100 text-gray-900 border-gray-200'} font-bold text-sm flex items-center justify-center space-x-2 border active:scale-95 transition`}
+          href={`tel:${BUSINESS_INFO.phoneRaw}`}
+          className="flex-1 py-3 px-3 rounded-full bg-[#F0F2EC] text-[#26322D] border border-[#D8DED5] font-semibold text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition"
         >
-          <Phone className="w-4 h-4 text-red-600" />
-          <span>Call Shop</span>
+          <span>Call Melissa</span>
         </a>
         <button
-          onClick={() => handleOpenWizard()}
-          className="flex-1 py-3 px-3.5 rounded-xl bg-red-700 hover:bg-red-800 text-white font-bold text-sm flex items-center justify-center space-x-2 shadow-sm active:scale-95 transition"
+          onClick={() => handleOpenInquiry()}
+          className="flex-1 py-3 px-3 rounded-full bg-[#345744] hover:bg-[#294737] text-white font-semibold text-xs flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 transition"
         >
-          <Calendar className="w-4 h-4" />
-          <span>Free Quote</span>
+          <span>Check Your Date</span>
         </button>
       </div>
     </div>

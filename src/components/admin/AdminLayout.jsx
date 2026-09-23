@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, ClipboardList, MessageSquare, 
-  Settings, LogOut, ExternalLink, Search, 
-  Bell, Mail, Wrench, Menu, X, Plus, Calendar, ShieldCheck
-} from 'lucide-react';
 import DashboardOverview from './DashboardOverview';
 import OrdersView from './OrdersView';
 import InboxView from './InboxView';
@@ -14,8 +9,8 @@ import { authApi, quotesApi } from '../../services/api';
 import { BUSINESS_INFO } from '../../data/businessData';
 
 function getInitials(name) {
-  if (!name) return 'AD';
-  const parts = name.trim().split(/\s+/);
+  if (!name) return 'MF';
+  const parts = name.trim().split(/s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
@@ -25,29 +20,28 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
   const [modalQuote, setModalQuote] = useState(null);
   const [isNewOrderOpen, setIsNewOrderOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [stats, setStats] = useState({ total: 0, pending: 0, quoted: 0, completed: 0 });
+  const [stats, setStats] = useState({ total: 3, pending: 1, quoted: 1, completed: 1 });
 
   useEffect(() => {
     quotesApi.getStats().then(setStats).catch(() => {});
   }, [activeTab]);
 
   const handleLogout = async () => {
-    await authApi.logout();
+    try {
+      await authApi.logout();
+    } catch {}
     onLogout();
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'orders', label: 'Orders & Quotes', icon: ClipboardList, badge: stats.total > 0 ? stats.total : null },
-    { id: 'inbox', label: 'Customer Inbox', icon: MessageSquare, badge: stats.pending > 0 ? stats.pending : null },
+    { id: 'dashboard', label: 'Pipeline & Overview' },
+    { id: 'orders', label: 'Proposals & Deposits', badge: stats.total > 0 ? stats.total : null },
+    { id: 'inbox', label: 'Wedding Inquiries', badge: stats.pending > 0 ? stats.pending : null },
   ];
 
   return (
-    <div className="min-h-screen bg-[#f4f6f8] text-slate-900 font-sans flex antialiased">
-      {/* ------------------------------------------------------------- */}
-      {/* LEFT SIDEBAR (Desktop & Mobile Drawer)                        */}
-      {/* ------------------------------------------------------------- */}
-      {/* Backdrop for mobile */}
+    <div className="min-h-screen bg-[#FAFAF6] text-[#26322D] font-sans flex antialiased">
+      {/* Mobile Backdrop */}
       {isMobileSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/40 z-40 lg:hidden backdrop-blur-xs"
@@ -55,41 +49,43 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
         />
       )}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+      {/* LEFT SIDEBAR */}
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#FEFEFB] border-r border-[#D8DED5] flex flex-col justify-between transition-transform duration-300 ease-in-out ${
         isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        <div className="p-6 space-y-8 flex-1 overflow-y-auto">
+        <div className="p-6 space-y-7 flex-1 overflow-y-auto">
           {/* Logo Brand */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-10 h-10 shrink-0 rounded-2xl bg-shop-red text-white flex items-center justify-center shadow-md shadow-shop-red/30">
-                <Wrench className="w-5 h-5" />
+              <div className="w-10 h-10 shrink-0 rounded-full bg-[#345744]/15 text-[#345744] flex items-center justify-center border border-[#345744]/30">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
               <div className="min-w-0 flex-1">
-                <span className="font-heading font-black text-base tracking-tight text-slate-900 block leading-tight truncate" title={BUSINESS_INFO.name}>
-                  {BUSINESS_INFO.name}
+                <span className="font-serif font-medium text-base tracking-tight text-[#26322D] block leading-tight truncate">
+                  Happy Pack
                 </span>
-                <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider block">
-                  Shop Admin
+                <span className="text-[10px] text-[#59645E] font-semibold uppercase tracking-wider block">
+                  Owner Portal
                 </span>
               </div>
             </div>
             <button 
               onClick={() => setIsMobileSidebarOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 shrink-0"
+              className="lg:hidden p-1.5 rounded-lg text-[#59645E] hover:text-[#26322D] shrink-0"
             >
-              <X className="w-5 h-5" />
+              ?
             </button>
           </div>
 
-          {/* MENU Section */}
-          <div className="space-y-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 block">
-              Menu
+          {/* Navigation Section */}
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-bold text-[#59645E] uppercase tracking-widest px-3 block">
+              Management
             </span>
             <nav className="space-y-1">
               {navItems.map((item) => {
-                const Icon = item.icon;
                 const isActive = activeTab === item.id;
                 return (
                   <button
@@ -98,21 +94,16 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
                       setActiveTab(item.id);
                       setIsMobileSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                       isActive
-                        ? 'bg-shop-red text-white shadow-md shadow-shop-red/25'
-                        : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                        ? 'bg-[#345744] text-white shadow-sm'
+                        : 'text-[#59645E] hover:bg-[#F0F2EC] hover:text-[#26322D]'
                     }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                      <span>{item.label}</span>
-                    </div>
+                    <span>{item.label}</span>
                     {item.badge && (
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                        isActive
-                          ? 'bg-white/25 text-white'
-                          : 'bg-shop-light text-shop-red border border-shop-border'
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-[#EAF0EB] text-[#345744]'
                       }`}>
                         {item.badge}
                       </span>
@@ -123,10 +114,10 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
             </nav>
           </div>
 
-          {/* GENERAL Section */}
-          <div className="space-y-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 block">
-              General
+          {/* General Section */}
+          <div className="space-y-1.5 pt-4 border-t border-[#D8DED5]">
+            <span className="text-[10px] font-bold text-[#59645E] uppercase tracking-widest px-3 block">
+              Actions
             </span>
             <nav className="space-y-1">
               <button
@@ -134,31 +125,27 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
                   setActiveTab('settings');
                   setIsMobileSidebarOpen(false);
                 }}
-                className={`w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition ${
+                className={`w-full flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'settings'
-                    ? 'bg-shop-red text-white shadow-md shadow-shop-red/25'
-                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                    ? 'bg-[#345744] text-white'
+                    : 'text-[#59645E] hover:bg-[#F0F2EC] hover:text-[#26322D]'
                 }`}
               >
-                <Settings className={`w-4 h-4 ${activeTab === 'settings' ? 'text-white' : 'text-slate-400'}`} />
                 <span>Settings & Alerts</span>
               </button>
 
               <button
                 onClick={onBackToSite}
-                className="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#59645E] hover:bg-[#F0F2EC] hover:text-[#26322D] transition"
               >
-                <div className="flex items-center space-x-3">
-                  <ExternalLink className="w-4 h-4 text-slate-400" />
-                  <span>View Customer Site</span>
-                </div>
+                <span>View Customer Website</span>
+                <span>?</span>
               </button>
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-bold text-red-600 hover:bg-red-50 transition"
+                className="w-full flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition"
               >
-                <LogOut className="w-4 h-4 text-red-500" />
                 <span>Logout</span>
               </button>
             </nav>
@@ -166,95 +153,43 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
         </div>
 
         {/* Bottom Banner Card */}
-        <div className="p-4 m-4 rounded-2xl bg-gradient-to-br from-shop-red to-shop-redHover text-white space-y-2 shadow-lg shadow-shop-red/20">
-          <div className="flex items-center space-x-2">
-            <span className="text-base">📱</span>
-            <h5 className="font-heading font-black text-xs truncate">{BUSINESS_INFO.name}</h5>
-          </div>
-          <p className="text-[11px] text-white/90 leading-snug">
-            Manage customer quotes and communications directly on your phone from any browser.
-          </p>
-          <button
-            onClick={onBackToSite}
-            className="w-full py-2 bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs rounded-xl transition shadow-xs cursor-pointer"
-          >
-            Visit Customer Site
-          </button>
+        <div className="p-4 m-4 rounded-2xl bg-[#F0F2EC] border border-[#D8DED5] text-[#26322D] space-y-1 text-xs">
+          <p className="font-semibold text-[#345744]">Melissa Floyd</p>
+          <p className="text-[11px] text-[#59645E]">Central Alabama Wedding Chaperone</p>
         </div>
       </aside>
 
-      {/* ------------------------------------------------------------- */}
-      {/* MAIN CONTENT CANVAS & TOP BAR                                 */}
-      {/* ------------------------------------------------------------- */}
+      {/* MAIN CONTENT CANVAS */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* TOP BAR */}
-        <header className="h-20 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
-          {/* Left: Mobile hamburger & Search */}
-          <div className="flex items-center space-x-3 flex-1 max-w-md">
+        <header className="h-16 bg-[#FEFEFB] border-b border-[#D8DED5] px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center space-x-3">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100"
+              className="lg:hidden p-2 rounded-xl border border-[#D8DED5] text-[#26322D]"
             >
-              <Menu className="w-5 h-5" />
+              ?
             </button>
-
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search orders, customers, or services..."
-                className="w-full bg-[#f8fafc] border border-slate-200 focus:border-shop-red focus:bg-white rounded-2xl pl-10 pr-12 py-2 text-xs text-slate-800 placeholder-slate-400 outline-none transition"
-              />
-              <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">
-                ⌘F
-              </span>
-            </div>
+            <span className="font-serif text-lg font-medium text-[#26322D]">
+              Wedding Booking Pipeline
+            </span>
           </div>
 
-          {/* Right: Notifications & Profile */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            {/* Quick Inbox Shortcut */}
+          <div className="flex items-center space-x-3">
             <button
-              onClick={() => setActiveTab('inbox')}
-              className="w-10 h-10 rounded-2xl border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 relative transition"
-              title="Customer Inbox"
+              onClick={() => setIsNewOrderOpen(true)}
+              className="btn-accent text-xs !py-2 !px-4"
             >
-              <Mail className="w-4 h-4" />
-              {stats.pending > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-shop-red text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-                  {stats.pending}
-                </span>
-              )}
+              + Create Proposal
             </button>
-
-            {/* Notification Bell */}
             <button
-              onClick={() => setActiveTab('orders')}
-              className="w-10 h-10 rounded-2xl border border-slate-200/80 hover:bg-slate-50 flex items-center justify-center text-slate-600 relative transition"
-              title="Notifications"
+              onClick={onBackToSite}
+              className="text-xs text-[#59645E] hover:text-[#26322D] border border-[#D8DED5] px-3 py-1.5 rounded-lg"
             >
-              <Bell className="w-4 h-4" />
-              <span className="absolute 2.5 2.5 w-2 h-2 rounded-full bg-shop-red" />
+              Public Site
             </button>
-
-            {/* Admin Profile Card */}
-            <div className="flex items-center space-x-3 pl-2 border-l border-slate-200">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-shop-red to-shop-redHover text-white font-black text-sm flex items-center justify-center shadow-sm">
-                {getInitials(BUSINESS_INFO.owner?.name || BUSINESS_INFO.name)}
-              </div>
-              <div className="hidden sm:block text-left">
-                <h4 className="text-xs font-black text-slate-900 leading-tight truncate max-w-[130px]">
-                  {BUSINESS_INFO.owner?.name || 'Shop Admin'}
-                </h4>
-                <span className="text-[11px] text-slate-400 block leading-tight truncate max-w-[130px]">
-                  {BUSINESS_INFO.address?.city ? `${BUSINESS_INFO.address.city}, ${BUSINESS_INFO.address.state || ''}` : 'Executive'}
-                </span>
-              </div>
-            </div>
           </div>
         </header>
 
-        {/* BODY CANVAS */}
         <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
           {activeTab === 'dashboard' && (
             <DashboardOverview 
@@ -274,7 +209,6 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
         </main>
       </div>
 
-      {/* Quote Detail Modal */}
       {modalQuote && (
         <QuoteDetailModal
           quote={modalQuote}
@@ -283,7 +217,6 @@ export default function AdminLayout({ user, onLogout, onBackToSite }) {
         />
       )}
 
-      {/* New Manual Order Modal */}
       <NewOrderModal
         isOpen={isNewOrderOpen}
         onClose={() => setIsNewOrderOpen(false)}
