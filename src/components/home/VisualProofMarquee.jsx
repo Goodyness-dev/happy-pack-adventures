@@ -3,19 +3,19 @@ import { imageManifest } from '../../data/imageManifest';
 
 export default function VisualProofMarquee({ onOpenInquiry }) {
   const imagesRow1 = [
-    { src: '/images/gallery-bridal-suite.jpg', title: 'Bridal Suite Cuddles', venue: 'The Donnelly House' },
+    { src: '/images/real-wedding-porch.jpg', title: 'Historic Venue Steps with Best Dog', venue: 'Alabama Wedding Venue' },
+    { src: '/images/melissa-real-puppies.jpg', title: 'Melissa & The Rescue Pups', venue: 'Happy Pack HQ' },
+    { src: '/images/sunset-golden-walk.jpg', title: 'Golden Hour Decompression Walk', venue: 'Sunset Meadow Trail' },
     { src: '/images/wedding-cooper.jpg', title: 'Cooper in Rose Garden', venue: 'Botanical Gardens' },
-    { src: '/images/gallery-ring-bearer.jpg', title: 'Ring Bearer Velvet Pouch', venue: 'Highland Park' },
-    { src: '/images/wedding-buster.jpg', title: 'Buster in Black Tie', venue: 'Hoover Country Club' },
-    { src: '/images/care-walk.jpg', title: 'Scenic Decompression Walk', venue: 'Mountain Brook Estate' },
+    { src: '/images/gallery-ring-bearer.jpg', title: 'Ring Bearer Velvet Pouch', venue: 'The Donnelly House' },
   ];
 
   const imagesRow2 = [
-    { src: '/images/gallery-groomsmen.jpg', title: 'Groomsmen Bowtie Gathering', venue: 'Terrace Lawn' },
+    { src: '/images/bride-pup-hug.jpg', title: 'Bridal Suite First Look Cuddles', venue: 'Private Estate' },
+    { src: '/images/groom-bestfriend.jpg', title: 'Groomsmen & Best Friend in Bowtie', venue: 'Country Club Terrace' },
+    { src: '/images/melissa-adventure.jpg', title: 'Melissa on Adventure Duty', venue: 'Central Alabama' },
     { src: '/images/moment-ceremony.jpg', title: 'Rose Petal Recessional', venue: 'Rose Garden Aisle' },
     { src: '/images/wedding-luna-bear.jpg', title: 'Luna & Bear Double Doodles', venue: 'Historic Manor' },
-    { src: '/images/moment-portraits.jpg', title: 'Sunset Couple Portraits', venue: 'Fairway Green' },
-    { src: '/images/moment-return.jpg', title: 'Safe Chauffeured Transit', venue: 'AC Pet Taxi' },
   ];
 
   return (

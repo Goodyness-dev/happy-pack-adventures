@@ -15,7 +15,7 @@ export const imageManifest = {
     caption: 'Joyful wedding dog moments'
   },
   handlerPortrait: {
-    src: '/images/melissa-floyd.jpg',
+    src: '/images/melissa-real-puppies.jpg',
     alt: 'Melissa Floyd, Founder and Master Wedding Dog Chaperone',
     caption: 'Melissa Floyd � Founder & Professional Wedding Dog Chaperone'
   },
