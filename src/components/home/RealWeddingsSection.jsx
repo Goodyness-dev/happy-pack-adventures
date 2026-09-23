@@ -1,23 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { REAL_WEDDINGS } from '../../data/servicesData';
 import { imageManifest } from '../../data/imageManifest';
 import ImageFrame from '../common/ImageFrame';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function RealWeddingsSection({ onOpenInquiry }) {
   const [selectedStory, setSelectedStory] = useState(null);
+  const sectionRef = useRef(null);
 
   const featuredStory = REAL_WEDDINGS[0];
   const supportingStories = REAL_WEDDINGS.slice(1);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.wedding-story-card', {
+        y: 40,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.2,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 75%'
+        }
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 sm:py-28 bg-[#F0F2EC]/40 border-t border-[#D8DED5]" id="weddings">
+    <section ref={sectionRef} className="py-20 sm:py-28 bg-[#F0F2EC]/40 border-t border-[#D8DED5]" id="weddings">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-18 gap-6">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#345744]">
-              // Authentic Celebrations
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#345744] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#345744]" />
+              Authentic Alabama Celebrations
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#26322D] mt-2 tracking-tight">
               A few very important wedding guests.
@@ -41,19 +65,20 @@ export default function RealWeddingsSection({ onOpenInquiry }) {
         {/* Album Layout: 1 Dominant Feature Card + 2 Supporting Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* Dominant Featured Story (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col">
-            <div className="card-thick p-6 sm:p-8 flex-1 flex flex-col justify-between hover:border-[#7C897F] transition-all">
+          {/* Dominant Featured Story: Cooper (7 Cols) */}
+          <div className="lg:col-span-7 flex flex-col wedding-story-card">
+            <div className="card-thick p-6 sm:p-8 flex-1 flex flex-col justify-between hover:border-[#7C897F] transition-all group overflow-hidden">
               <div>
-                <ImageFrame
-                  src={imageManifest.realWeddings.cooper.src}
-                  alt={imageManifest.realWeddings.cooper.alt}
-                  aspectRatio="aspect-[16/10]"
-                  rounded="rounded-xl sm:rounded-2xl"
-                  title={imageManifest.realWeddings.cooper.placeholderTitle}
-                  subtitle={imageManifest.realWeddings.cooper.placeholderSubtitle}
-                  badge="Featured Story"
-                />
+                <div className="overflow-hidden rounded-2xl aspect-[16/10] relative">
+                  <img
+                    src={imageManifest.realWeddings.cooper.src}
+                    alt={imageManifest.realWeddings.cooper.alt}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-106"
+                  />
+                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold bg-white/95 text-[#26322D] backdrop-blur-md shadow-sm border border-[#D8DED5]">
+                    Featured Celebration
+                  </div>
+                </div>
 
                 <div className="mt-6 flex flex-wrap items-center gap-3 text-xs text-[#59645E]">
                   <span className="px-2.5 py-1 rounded-md bg-[#F0F2EC] text-[#345744] font-semibold">
@@ -86,7 +111,7 @@ export default function RealWeddingsSection({ onOpenInquiry }) {
                   onClick={() => setSelectedStory(featuredStory)}
                   className="font-semibold text-[#345744] hover:text-[#294737] flex items-center gap-1"
                 >
-                  <span>View Timeline</span>
+                  <span>View Day-of Timeline</span>
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -95,7 +120,7 @@ export default function RealWeddingsSection({ onOpenInquiry }) {
             </div>
           </div>
 
-          {/* 2 Supporting Stories (5 Cols) */}
+          {/* 2 Supporting Stories: Buster + Luna & Bear (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col space-y-8">
             {supportingStories.map((story) => {
               const imageInfo = story.id.includes('buster')
@@ -105,17 +130,16 @@ export default function RealWeddingsSection({ onOpenInquiry }) {
               return (
                 <div
                   key={story.id}
-                  className="card-thick p-6 flex flex-col justify-between hover:border-[#7C897F] transition-all flex-1"
+                  className="wedding-story-card card-thick p-6 flex flex-col justify-between hover:border-[#7C897F] transition-all flex-1 group overflow-hidden"
                 >
                   <div>
-                    <ImageFrame
-                      src={imageInfo.src}
-                      alt={imageInfo.alt}
-                      aspectRatio="aspect-[16/9]"
-                      rounded="rounded-xl"
-                      title={imageInfo.placeholderTitle}
-                      subtitle={imageInfo.placeholderSubtitle}
-                    />
+                    <div className="overflow-hidden rounded-xl aspect-[16/9] relative">
+                      <img
+                        src={imageInfo.src}
+                        alt={imageInfo.alt}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-106"
+                      />
+                    </div>
 
                     <div className="mt-4 flex items-center gap-2 text-xs text-[#59645E]">
                       <span className="font-semibold text-[#345744]">{story.couple}</span>
@@ -133,7 +157,7 @@ export default function RealWeddingsSection({ onOpenInquiry }) {
                   </div>
 
                   <div className="pt-3 border-t border-[#D8DED5] flex items-center justify-between text-xs">
-                    <span className="text-[11px] text-[#59645E]">{story.dog} ({story.breed})</span>
+                    <span className="text-[11px] text-[#59645E] font-medium">{story.dog} ({story.breed})</span>
                     <button
                       onClick={() => setSelectedStory(story)}
                       className="font-semibold text-[#345744] hover:text-[#294737] flex items-center gap-1"

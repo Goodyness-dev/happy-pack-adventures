@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Lenis from 'lenis';
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
+import VisualProofMarquee from './components/home/VisualProofMarquee';
 import ProofSection from './components/home/ProofSection';
 import WhatWeTakeCareOf from './components/home/WhatWeTakeCareOf';
 import MomentsExplorer from './components/home/MomentsExplorer';
@@ -28,6 +30,28 @@ export default function App() {
   // Admin Auth State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminUser, setAdminUser] = useState(null);
+
+  // Initialize Lenis Kinetic Smooth Scroll
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 1.5,
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     const token = getStoredToken();
@@ -135,6 +159,10 @@ export default function App() {
       {/* Main Wedding Album Editorial Flow */}
       <main className="flex-grow">
         <Hero onOpenInquiry={handleOpenInquiry} />
+        
+        {/* Dynamic Infinite Photo Ribbon Marquee */}
+        <VisualProofMarquee onOpenInquiry={handleOpenInquiry} />
+
         <ProofSection />
         <WhatWeTakeCareOf onOpenInquiry={handleOpenInquiry} />
         <MomentsExplorer
