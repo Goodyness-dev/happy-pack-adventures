@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BUSINESS_INFO } from '../../data/businessData';
@@ -12,38 +12,76 @@ export default function Hero({ onOpenInquiry }) {
   const textContentRef = useRef(null);
   const cardsRef = useRef(null);
 
+  // Dynamic animated counter state
+  const [stats, setStats] = useState({
+    weddings: 0,
+    rating: 0,
+    ontime: 0
+  });
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Background Parallax
-      gsap.to(bgImageRef.current, {
-        yPercent: 18,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2
+      // 1. Background Image Parallax Scrubbing
+      if (bgImageRef.current) {
+        gsap.to(bgImageRef.current, {
+          yPercent: 20,
+          scale: 1.12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.5
+          }
+        });
+      }
+
+      // 2. Staggered Headline & Subtitle Reveal
+      gsap.fromTo(
+        '.hero-anim-item',
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.1,
+          stagger: 0.16,
+          ease: 'power3.out',
+          clearProps: 'transform'
         }
-      });
+      );
 
-      // Staggered Text Reveal
-      gsap.from('.hero-anim-item', {
-        y: 35,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.15,
-        ease: 'power3.out'
-      });
+      // 3. Floating Proof Cards Entry Animation
+      gsap.fromTo(
+        '.hero-float-card',
+        { y: 60, opacity: 0, scale: 0.94 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          delay: 0.35,
+          stagger: 0.22,
+          ease: 'power3.out',
+          clearProps: 'transform'
+        }
+      );
 
-      // Floating Cards Reveal
-      gsap.from('.hero-float-card', {
-        y: 50,
-        opacity: 0,
-        scale: 0.95,
-        duration: 1.2,
-        delay: 0.4,
-        stagger: 0.2,
-        ease: 'power3.out'
+      // 4. GSAP KPI Counter Roll-Up Ticker
+      const counterTarget = { weddings: 0, rating: 0, ontime: 0 };
+      gsap.to(counterTarget, {
+        weddings: 85,
+        rating: 5.0,
+        ontime: 100,
+        duration: 2.2,
+        delay: 0.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+          setStats({
+            weddings: Math.round(counterTarget.weddings),
+            rating: Number(counterTarget.rating).toFixed(1),
+            ontime: Math.round(counterTarget.ontime)
+          });
+        }
       });
     }, heroRef);
 
@@ -68,8 +106,8 @@ export default function Hero({ onOpenInquiry }) {
           ref={bgImageRef}
           src={imageManifest.heroBgCinematic.src}
           alt={imageManifest.heroBgCinematic.alt}
-          className="w-full h-[120%] -top-[10%] object-cover object-center scale-105 filter brightness-95"
-          fetchpriority="high"
+          className="w-full h-[125%] -top-[12%] object-cover object-center scale-105 filter brightness-90 will-change-transform"
+          fetchPriority="high"
         />
 
         {/* Multi-layered Cinematic Scrim & Vignette Overlays */}
@@ -90,26 +128,26 @@ export default function Hero({ onOpenInquiry }) {
             <div className="hero-anim-item inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white shadow-lg">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               <span className="text-xs font-semibold tracking-wider uppercase">
-                Now Booking 2026 & 2027 Celebrations � Central Alabama
+                Now Booking 2026 &amp; 2027 Celebrations — Central Alabama
               </span>
             </div>
 
-            {/* Main Editorial Headline */}
-            <h1 className="hero-anim-item font-serif text-4xl sm:text-6xl lg:text-[4.25rem] leading-[1.05] text-white font-normal tracking-tight drop-shadow-md">
+            {/* Main Editorial Headline: Strict 2-3 Line Width */}
+            <h1 className="hero-anim-item font-serif text-4xl sm:text-6xl lg:text-[4.25rem] leading-[1.06] text-white font-normal tracking-tight drop-shadow-md max-w-4xl">
               Your wedding day. <br />
               <span className="italic font-normal text-emerald-300">Their place</span> beside you.
             </h1>
 
             {/* Supporting Copy */}
             <p className="hero-anim-item text-base sm:text-lg lg:text-xl text-stone-200 leading-relaxed max-w-2xl font-sans font-light drop-shadow">
-              Thoughtful wedding-day dog care, photo assistance, and safe climate-controlled transit�so your family and wedding party stay fully present while every detail of your pup�s day is handled.
+              Thoughtful wedding-day dog care, photo assistance, and safe climate-controlled transit—so your family and wedding party stay fully present while every detail of your pup’s day is handled.
             </p>
 
             {/* Interactive CTAs */}
             <div className="hero-anim-item flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
               <button
                 onClick={() => onOpenInquiry()}
-                className="btn-accent text-base !py-4 !px-8 shadow-glow-accent group"
+                className="btn-accent text-base !py-4 !px-8 shadow-glow-accent group transition-transform active:scale-95"
               >
                 <span>Check Your Wedding Date</span>
                 <svg className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -119,18 +157,20 @@ export default function Hero({ onOpenInquiry }) {
 
               <button
                 onClick={() => scrollToSection('weddings')}
-                className="btn-hero-glass text-base"
+                className="btn-hero-glass text-base flex items-center justify-center gap-2 transition-transform active:scale-95"
               >
                 <span>See Real Weddings</span>
-                <span className="text-xs opacity-75">?</span>
+                <svg className="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
             </div>
 
-            {/* Quick KPI Stat Bar */}
+            {/* Quick KPI Stat Bar with GSAP Dynamic Counters */}
             <div className="hero-anim-item pt-6 border-t border-white/20 flex flex-wrap items-center gap-6 sm:gap-10 text-white">
               <div>
                 <span className="font-serif text-2xl sm:text-3xl font-bold text-white block">
-                  85+
+                  {stats.weddings}+
                 </span>
                 <span className="text-[11px] uppercase tracking-wider text-stone-300 block">
                   Weddings Chaperoned
@@ -138,8 +178,9 @@ export default function Hero({ onOpenInquiry }) {
               </div>
               <div className="w-[1px] h-9 bg-white/20" />
               <div>
-                <span className="font-serif text-2xl sm:text-3xl font-bold text-emerald-300 block">
-                  5.0 ?
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-emerald-300 block flex items-center gap-1">
+                  <span>{stats.rating}</span>
+                  <span className="text-amber-400 text-lg">★</span>
                 </span>
                 <span className="text-[11px] uppercase tracking-wider text-stone-300 block">
                   Verified Bride Reviews
@@ -148,10 +189,10 @@ export default function Hero({ onOpenInquiry }) {
               <div className="w-[1px] h-9 bg-white/20" />
               <div>
                 <span className="font-serif text-2xl sm:text-3xl font-bold text-white block">
-                  100%
+                  {stats.ontime}%
                 </span>
                 <span className="text-[11px] uppercase tracking-wider text-stone-300 block">
-                  On-Time & Safe Return
+                  On-Time &amp; Safe Return
                 </span>
               </div>
             </div>
@@ -161,16 +202,17 @@ export default function Hero({ onOpenInquiry }) {
           {/* Right Column: Floating Live Proof Cards (5 Cols) */}
           <div ref={cardsRef} className="lg:col-span-5 relative space-y-4">
             
-            {/* Primary Featured Card: Cooper */}
-            <div className="hero-float-card animate-float-slow bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-white/40 shadow-2xl space-y-3 max-w-md ml-auto">
-              <div className="relative rounded-2xl overflow-hidden aspect-[16/10]">
+            {/* Primary Featured Card: Real Photo with Tuxedo Bandana */}
+            <div className="hero-float-card bg-white/95 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-white/40 shadow-2xl space-y-3 max-w-md ml-auto hover:shadow-emerald-950/20 transition-all duration-500 group">
+              <div className="relative rounded-2xl overflow-hidden aspect-[16/11]">
                 <img
                   src={imageManifest.realWeddings.cooper.src}
-                  alt="Cooper at Birmingham Botanical Gardens"
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  alt={imageManifest.realWeddings.cooper.alt}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-106"
+                  loading="eager"
                 />
                 <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 text-white backdrop-blur-md text-[11px] font-semibold">
-                  Birmingham Botanical Gardens
+                  Historic Alabama Estate
                 </div>
                 <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-emerald-700 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-md">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -181,31 +223,33 @@ export default function Hero({ onOpenInquiry }) {
               <div className="flex items-center justify-between pt-1">
                 <div>
                   <h4 className="font-serif text-lg text-[#26322D] font-medium">
-                    Cooper with Savannah & Tyler
+                    Cooper with Savannah &amp; Tyler
                   </h4>
                   <p className="text-xs text-[#59645E]">
-                    Golden Retriever � Ceremony Companion
+                    Golden Retriever — Ceremony Companion
                   </p>
                 </div>
-                <div className="flex text-amber-500 text-xs">
-                  {'?'.repeat(5)}
+                <div className="flex text-amber-500 text-xs gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
                 </div>
               </div>
             </div>
 
             {/* Secondary Floating Testimonial Pill */}
-            <div className="hero-float-card animate-float-delayed bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-white/50 shadow-xl max-w-sm mr-auto sm:ml-4 flex items-center gap-3.5">
+            <div className="hero-float-card bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-white/50 shadow-xl max-w-sm mr-auto sm:ml-4 flex items-center gap-3.5 hover:bg-white transition-colors duration-300">
               <img
                 src={imageManifest.realWeddings.buster.src}
-                alt="Buster the Frenchie"
-                className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl object-cover border border-[#D8DED5] flex-shrink-0"
+                alt="Happy pup in white rose garland"
+                className="w-14 h-14 rounded-xl object-cover border border-[#D8DED5] flex-shrink-0"
               />
               <div className="min-w-0">
                 <p className="text-xs italic text-[#26322D] line-clamp-2 leading-snug">
-                  �Melissa was the single best vendor decision we made. Buster was calm and happy!�
+                  “Melissa was the single best vendor decision we made. Our dog was calm, loved, and happy!”
                 </p>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#345744] mt-1">
-                  � Kaitlyn B. � Hoover Country Club
+                  — Kaitlyn B. — Hoover Country Club
                 </p>
               </div>
             </div>

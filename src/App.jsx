@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 import Navbar from './components/layout/Navbar';
 import Hero from './components/home/Hero';
 import VisualProofMarquee from './components/home/VisualProofMarquee';
@@ -31,24 +35,41 @@ export default function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminUser, setAdminUser] = useState(null);
 
-  // Initialize Lenis Kinetic Smooth Scroll
+  // Initialize Lenis Kinetic Smooth Scroll & Sync with GSAP ScrollTrigger
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 1.5,
     });
 
-    let rafId;
-    function raf(time) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
+    // Synchronize Lenis scroll updates with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Drive Lenis directly via GSAP ticker to eliminate lag and frame drops
+    const tickerHandler = (time) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(tickerHandler);
+    gsap.ticker.lagSmoothing(0);
+
+    // Refresh ScrollTrigger calculations after initial layout and font loading
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 400);
+
+    const handleWindowLoad = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('load', handleWindowLoad);
+    window.addEventListener('resize', handleWindowLoad);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      clearTimeout(refreshTimer);
+      window.removeEventListener('load', handleWindowLoad);
+      window.removeEventListener('resize', handleWindowLoad);
+      gsap.ticker.remove(tickerHandler);
       lenis.destroy();
     };
   }, []);

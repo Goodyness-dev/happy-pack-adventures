@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { MOMENTS_DATA } from '../../data/servicesData';
 import { imageManifest } from '../../data/imageManifest';
 import ImageFrame from '../common/ImageFrame';
 
 export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpenInquiry }) {
   const [activeTabId, setActiveTabId] = useState('portraits');
+  const cardContentRef = useRef(null);
 
   const activeMoment = MOMENTS_DATA.find((m) => m.id === activeTabId) || MOMENTS_DATA[0];
 
@@ -17,10 +19,20 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
   const currentImage = momentImageMap[activeTabId] || imageManifest.momentPortraits;
   const isIncluded = selectedMoments.includes(activeTabId);
 
+  // Animate tab content smoothly on change
+  useEffect(() => {
+    if (cardContentRef.current) {
+      gsap.fromTo(
+        cardContentRef.current,
+        { opacity: 0.35, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+  }, [activeTabId]);
+
   return (
     <section className="py-20 sm:py-28 bg-[#F0F2EC]/50 border-t border-[#D8DED5]" id="moments-planner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#345744]">
@@ -44,7 +56,7 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                 <button
                   key={tab.id}
                   onClick={() => setActiveTabId(tab.id)}
-                  className={`relative px-5 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap ${
+                  className={`relative px-5 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2 whitespace-nowrap active:scale-95 ${
                     isActive
                       ? 'bg-[#345744] text-white shadow-md'
                       : 'text-[#59645E] hover:text-[#26322D]'
@@ -61,9 +73,8 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
         </div>
 
         {/* Interactive Card Canvas */}
-        <div className="card-thick p-6 sm:p-10 lg:p-12 shadow-wedding-raised">
+        <div ref={cardContentRef} className="card-thick p-6 sm:p-10 lg:p-12 shadow-wedding-raised">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
             {/* Visual Photo Preview (7 Cols) */}
             <div className="lg:col-span-7">
               <div className="relative">
@@ -74,7 +85,7 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                   rounded="rounded-2xl"
                   title={currentImage.placeholderTitle}
                   subtitle={currentImage.placeholderSubtitle}
-                  badge={`Moment 0${MOMENTS_DATA.findIndex(m => m.id === activeTabId) + 1}`}
+                  badge={`Moment 0${MOMENTS_DATA.findIndex((m) => m.id === activeTabId) + 1}`}
                 />
               </div>
 
@@ -106,7 +117,7 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                   {activeMoment.title}
                 </h3>
                 <p className="text-sm sm:text-base italic text-[#345744] font-serif mb-3">
-                  �{activeMoment.lead}�
+                  "{activeMoment.lead}"
                 </p>
                 <p className="text-sm text-[#59645E] leading-relaxed mb-6 font-sans">
                   {activeMoment.description}
@@ -130,7 +141,7 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <button
                     onClick={() => onToggleMoment(activeTabId)}
-                    className={`px-4 py-2.5 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                    className={`px-4 py-2.5 rounded-full text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 ${
                       isIncluded
                         ? 'bg-[#345744] text-white shadow-sm'
                         : 'bg-white text-[#26322D] border border-[#D8DED5] hover:border-[#7C897F]'
@@ -158,7 +169,7 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                     onClick={() => onOpenInquiry()}
                     className="text-xs font-semibold text-[#345744] hover:text-[#294737] underline underline-offset-4 text-center sm:text-right"
                   >
-                    Build Full Plan ?
+                    Build Full Plan &rarr;
                   </button>
                 </div>
 
@@ -166,12 +177,9 @@ export default function MomentsExplorer({ selectedMoments, onToggleMoment, onOpe
                   *Illustrative schedule. Your final timeline is tailored to your venue and photography schedule.
                 </p>
               </div>
-
             </div>
-
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SERVICES } from '../../data/servicesData';
@@ -9,24 +9,30 @@ export default function CoverageSection({ onOpenInquiry }) {
   const sectionRef = useRef(null);
 
   const serviceImages = {
-    'photo-companion': '/images/moment-portraits.jpg',
-    'ceremony-companion': '/images/moment-ceremony.jpg',
-    'extended-wedding-care': '/images/gallery-bridal-suite.jpg'
+    'photo-companion': '/images/real-wedding-03.jpg',
+    'ceremony-companion': '/images/ceremony-flower-collar-dog.jpg',
+    'extended-wedding-care': '/images/real-wedding-04.jpg'
   };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.coverage-card', {
-        y: 45,
-        opacity: 0,
-        duration: 0.85,
-        stagger: 0.18,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
+      gsap.fromTo(
+        '.coverage-card',
+        { y: 45, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          stagger: 0.18,
+          ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            once: true
+          }
         }
-      });
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -35,7 +41,6 @@ export default function CoverageSection({ onOpenInquiry }) {
   return (
     <section ref={sectionRef} className="py-20 sm:py-28 bg-[#FAFAF6]" id="services">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-14 sm:mb-20">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#345744]">
@@ -68,13 +73,15 @@ export default function CoverageSection({ onOpenInquiry }) {
                     src={cardImg}
                     alt={service.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
+                    loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+
                   {service.popular && (
                     <div className="absolute top-3.5 right-3.5">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#345744] text-white shadow-md">
-                        ? Most Requested Scope
+                      <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#345744] text-white shadow-md flex items-center gap-1">
+                        <span>★</span>
+                        <span>Most Requested Scope</span>
                       </span>
                     </div>
                   )}
@@ -126,7 +133,7 @@ export default function CoverageSection({ onOpenInquiry }) {
 
                     <button
                       onClick={() => onOpenInquiry(service.id)}
-                      className={`w-full py-3 px-5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                      className={`w-full py-3 px-5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 ${
                         service.popular
                           ? 'bg-[#345744] text-white hover:bg-[#294737] shadow-sm'
                           : 'bg-[#F0F2EC] text-[#26322D] hover:bg-[#345744] hover:text-white border border-[#D8DED5]'
@@ -143,7 +150,6 @@ export default function CoverageSection({ onOpenInquiry }) {
                     </p>
                   </div>
                 </div>
-
               </div>
             );
           })}
@@ -158,7 +164,6 @@ export default function CoverageSection({ onOpenInquiry }) {
             We never believe in rigid flat pricing or surprise fees. Your tailored proposal reflects your exact venue mileage, celebration hours, and dog count. Once reviewed and approved by you, your date is locked with a single booking deposit.
           </p>
         </div>
-
       </div>
     </section>
   );

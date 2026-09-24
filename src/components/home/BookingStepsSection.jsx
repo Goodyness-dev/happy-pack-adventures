@@ -1,12 +1,18 @@
-import React from 'react';
+﻿import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BUSINESS_INFO } from '../../data/businessData';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function BookingStepsSection({ onOpenInquiry }) {
+  const sectionRef = useRef(null);
+
   const steps = [
     {
       num: '01',
       title: 'Share Your Wedding Details',
-      desc: 'Tell us your wedding date, venue, and tell us about your dog�s personality and requested coverage.'
+      desc: 'Tell us your wedding date, venue, and tell us about your dog’s personality and requested coverage.'
     },
     {
       num: '02',
@@ -25,17 +31,40 @@ export default function BookingStepsSection({ onOpenInquiry }) {
     }
   ];
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.booking-step-card',
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.14,
+          ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            once: true
+          }
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 sm:py-28 bg-[#F0F2EC]/40 border-t border-[#D8DED5]" id="how-it-works">
+    <section ref={sectionRef} className="py-20 sm:py-28 bg-[#F0F2EC]/40 border-t border-[#D8DED5]" id="how-it-works">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-14 sm:mb-18">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#345744]">
             // Seamless Four-Step Process
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-[#26322D] mt-2 tracking-tight">
-            How booking your dog�s care works.
+            How booking your dog’s care works.
           </h2>
           <p className="text-base text-[#59645E] mt-3 font-sans">
             Calm, transparent, and organized from your first message to your wedding recessional.
@@ -47,10 +76,10 @@ export default function BookingStepsSection({ onOpenInquiry }) {
           {steps.map((step) => (
             <div
               key={step.num}
-              className="card-thick p-7 flex flex-col justify-between hover:border-[#7C897F] transition-all bg-[#FEFEFB]"
+              className="booking-step-card card-thick p-7 flex flex-col justify-between hover:border-[#7C897F] transition-all bg-[#FEFEFB] group"
             >
               <div>
-                <span className="font-mono text-2xl font-light text-[#345744] block mb-3">
+                <span className="font-mono text-2xl font-light text-[#345744] block mb-3 group-hover:scale-105 transition-transform">
                   {step.num}
                 </span>
                 <h3 className="font-serif text-xl font-medium text-[#26322D] mb-2">
@@ -71,7 +100,7 @@ export default function BookingStepsSection({ onOpenInquiry }) {
             <span>Official Booking Guarantee</span>
           </div>
           <p className="font-serif text-xl sm:text-2xl font-medium text-[#26322D] leading-snug">
-            �{BUSINESS_INFO.bookingPolicy}�
+            "{BUSINESS_INFO.bookingPolicy}"
           </p>
           <p className="text-xs text-[#59645E] mt-2 max-w-xl mx-auto">
             We never double-book dates. Once your deposit is received, Melissa is exclusively reserved for your celebration.
@@ -79,13 +108,12 @@ export default function BookingStepsSection({ onOpenInquiry }) {
           <div className="mt-5">
             <button
               onClick={() => onOpenInquiry()}
-              className="btn-accent text-xs !py-2.5 !px-6"
+              className="btn-accent text-xs !py-2.5 !px-6 active:scale-95 transition-transform"
             >
               Check Availability For Your Date
             </button>
           </div>
         </div>
-
       </div>
     </section>
   );
